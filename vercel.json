@@ -4,10 +4,11 @@
   "installCommand": "",
   "buildCommand": "",
   "outputDirectory": "public",
-  "rewrites": [
+  "redirects": [
     {
       "source": "/(.*)",
-      "destination": "https://seoul-jeopardy-online.metislab79.workers.dev/$1"
+      "destination": "https://seoul-jeopardy-online.metislab79.workers.dev/$1",
+      "permanent": false
     }
   ]
 }

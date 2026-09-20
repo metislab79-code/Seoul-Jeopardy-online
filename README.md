@@ -12,7 +12,7 @@
 
 ## 배포 (Cloudflare Workers)
 
-이 앱은 Cloudflare D1 데이터베이스를 사용하므로 Vercel·GitHub Pages에서 직접 실행할 수 없습니다. Vercel은 `package.json`의 `next`를 보고 Next.js로 인식해 `.next/routes-manifest.json`을 찾다가 실패합니다. 그래서 `vercel.json`은 빌드를 건너뛰고 모든 요청을 Cloudflare 사이트로 전달합니다. Vercel 주소로도 접속되지만 실제 서버와 DB는 Cloudflare입니다. Worker 주소가 바뀌면 `vercel.json`의 `destination`도 함께 바꿔야 합니다.
+이 앱은 Cloudflare D1 데이터베이스를 사용하므로 Vercel·GitHub Pages에서 직접 실행할 수 없습니다. Vercel은 `package.json`의 `next`를 보고 Next.js로 인식해 `.next/routes-manifest.json`을 찾다가 실패합니다. 그래서 `vercel.json`은 빌드를 건너뛰고 모든 요청을 Cloudflare 사이트로 리다이렉트합니다. Worker 주소가 바뀌면 `vercel.json`의 `destination`도 함께 바꿔야 합니다. 리다이렉트 대신 rewrite(프록시)를 쓰면 안 됩니다. Vercel이 zstd로 압축된 정적 파일을 캐시해 모든 기기에 그대로 보내므로, zstd를 지원하지 않는 브라우저(삼성 인터넷, iOS 사파리 등)에서 CSS와 JS가 깨집니다.
 
 ```bash
 pnpm install
