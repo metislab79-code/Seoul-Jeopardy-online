@@ -10,4 +10,16 @@
 
 서버: Cloudflare Worker / D1, 프런트: React / Vinext. 상태 갱신 주기 1.5초.
 
+## 배포 (Cloudflare Workers)
+
+이 앱은 Cloudflare D1 데이터베이스를 사용하므로 Vercel·GitHub Pages에서는 게임이 동작하지 않습니다. Vercel은 `package.json`의 `next`를 보고 Next.js로 인식해 `.next/routes-manifest.json`을 찾다가 실패합니다.
+
+```bash
+pnpm install
+pnpm exec wrangler login   # 최초 1회, 브라우저에서 Cloudflare 계정 승인
+pnpm deploy:cf
+```
+
+`pnpm deploy:cf`는 D1 데이터베이스 생성(없을 때만), `drizzle/` 마이그레이션 적용, 빌드, 배포를 차례로 실행합니다. 생성된 D1 ID는 `cloudflare.deploy.json`에 저장되며 비밀값이 아니므로 커밋해도 됩니다. Worker 이름과 DB 이름도 이 파일에서 바꿀 수 있습니다. 소개 페이지는 `/landing`입니다.
+
 문제별 글자 수·초성 힌트가 문제 공개와 함께 표시됩니다. 대표 정답의 공백·문장부호를 제외한 글자 수이며, 영문 약자는 한글 발음을 기준으로 합니다. 서버 채점은 사전에 등록한 동의어·약칭·영문/한글 표기 및 축제/페스티벌 표기를 인정합니다. 기존 제출 답안은 자동 재채점하지 않으며 진행자가 정답 공개 후 수정할 수 있습니다.
