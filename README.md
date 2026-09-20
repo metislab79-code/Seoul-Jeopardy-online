@@ -12,7 +12,7 @@
 
 ## 배포 (Cloudflare Workers)
 
-이 앱은 Cloudflare D1 데이터베이스를 사용하므로 Vercel·GitHub Pages에서는 게임이 동작하지 않습니다. Vercel은 `package.json`의 `next`를 보고 Next.js로 인식해 `.next/routes-manifest.json`을 찾다가 실패합니다.
+이 앱은 Cloudflare D1 데이터베이스를 사용하므로 Vercel·GitHub Pages에서 직접 실행할 수 없습니다. Vercel은 `package.json`의 `next`를 보고 Next.js로 인식해 `.next/routes-manifest.json`을 찾다가 실패합니다. 그래서 `vercel.json`은 빌드를 건너뛰고 모든 요청을 Cloudflare 사이트로 전달합니다. Vercel 주소로도 접속되지만 실제 서버와 DB는 Cloudflare입니다. Worker 주소가 바뀌면 `vercel.json`의 `destination`도 함께 바꿔야 합니다.
 
 ```bash
 pnpm install
