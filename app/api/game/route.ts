@@ -2,6 +2,8 @@ import { database } from '@/lib/server-db';
 import { questions } from '@/lib/questions';
 import { isCorrectAnswer, getQuestionHint } from '@/lib/answer-rules';
 const json=(v:unknown,status=200)=>Response.json(v,{status,headers:{'Cache-Control':'no-store'}});
+// Sites that proxy to this worker (see vercel.json); their Origin differs from req.url.
+const proxyOrigins=['https://seoul-quiz-zoom.vercel.app'];
 const clean=(s:string)=>s.normalize('NFKC').toLowerCase().replace(/[\s·.,()\-]/g,'');
 
 async function hash(s:string){return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))).map(x=>x.toString(16).padStart(2,'0')).join('');}
@@ -24,7 +26,7 @@ async function snapshot(db:D1Database,r:any,token:string){
 }
 export async function GET(req:Request){try{const u=new URL(req.url);const code=u.searchParams.get('room')||'';const db=database();const r=await room(db,code);if(!r)return json({error:'입장코드를 확인해 주세요.'},404);return json(await snapshot(db,r,req.headers.get('Authorization')?.replace('Bearer ','')||''));}catch(e:any){console.error(e);return json({error:'연결하지 못했습니다. 잠시 후 다시 시도해 주세요.'},503);}}
 export async function POST(req:Request){try{
- if(req.headers.get('Origin')&&req.headers.get('Origin')!==new URL(req.url).origin)return json({error:'허용되지 않은 요청입니다.'},403);
+ const origin=req.headers.get('Origin');if(origin&&origin!==new URL(req.url).origin&&!proxyOrigins.includes(origin))return json({error:'허용되지 않은 요청입니다.'},403);
  const b=await req.json() as any;const db=database();const action=b.action;const token=req.headers.get('Authorization')?.replace('Bearer ','')||'';const hashed=await hash(token);
  if(action==='create'){
   const teams=Number(b.teams),seconds=50;if(!Number.isInteger(teams)||teams<1||teams>10||![50].includes(seconds))error('조 수와 제한시간을 확인해 주세요.');
